@@ -43,6 +43,6 @@ else
 }
 
 #print the output in the screen
-"Datastamp="+$Now+"|"+"hostname="+$hostname+"|"+"OS="+$ostype+"|"+"OS_Version="+$version+"|"+"Status="+$patchstatus+"|"+"Pending_KB_Count="+$pendingupdate+"|"+"Pending_Reboot="+$rebootpending+"|"+"Last_KB_PatchDate="+$lastpatchs+"|"+"Uptime="+$uptime"|"
+"Datastamp="+$Now+"|"+"hostname="+$hostname+"|"+"OS="+$ostype+"|"+"OS_Version="+$version+"|"+"Status="+$patchstatus+"|"+"Pending_KB_Count="+$pendingupdate+"|"+"Pending_Reboot="+$rebootpending+"|"+"Last_KB_PatchDate="+$lastpatchs+"|"+"Uptime="+$uptime
 
 #END_OF_SCRIPT
