@@ -4,6 +4,7 @@
 #Get the no. of available updates with details information
 #Install the patches required to the system
 #Created by - Preamkumar Umapathi on 02/17/2020
+#Updated V0.1 - Preamkumar Umapathi on 02/18/2020 - Updated "-IgnoreReboot" in Install and check update command
 
 #SCRIPT_START
 
@@ -26,7 +27,7 @@ if (Import-Module -Name PSWindowsUpdate -EA Ignore)
 else
 {
     #Check if any updates available
-    $searchresult=Get-WindowsUpdate
+    $searchresult=Get-WindowsUpdate -IgnoreReboot
     $pendingupdate=$searchresult.KB.Count
     if(!$pendingupdate)
     {
@@ -35,7 +36,7 @@ else
     else
     {
         #Install all patches
-        Install-WindowsUpdate -AcceptAll
+        Install-WindowsUpdate -AcceptAll -IgnoreReboot
     }
 }
 
