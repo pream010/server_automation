@@ -2,6 +2,7 @@ import json
 import csv
 import pandas as pd
 
+https://til.hashrocket.com/posts/fn98hbc5re-how-to-convert-json-to-csv-with-jq
 
 # Opening JSON file and loading the data
 # into the variable data
