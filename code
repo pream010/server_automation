@@ -4,3 +4,5 @@
 |eval mon_year=mvindex(temp,2), start_date_time=mon_patch."/".mon_date."/".mon_year
 | eval timestamp=strptime(start_date_time, "%m/%d/%Y %H:%M")
 | eval formattedTimestamp = strftime(timestamp,"%m/%d/%Y %H:%M")
+
+|join [| makeresults | eval next_24_hours=strftime(relative_time(_time, "+72h"),"%m/%d/%Y %H:%M") | eval current_date=strftime(now(),"%m/%d/%Y %H:%M")]
