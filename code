@@ -1,0 +1,6 @@
+| eval temp=split(schedule_start_date,"/")
+|eval mon_patch=mvindex(temp,0), mon_patch=if(mon_patch="1","01",if(mon_patch="2","02",if(mon_patch="3","03",if(mon_patch="4","04",if(mon_patch="5","05",if(mon_patch="6","06",if(mon_patch="6","06",if(mon_patch="7","07",if(mon_patch="8","08",if(mon_patch="9","09",mon_patch))))))))))
+|eval mon_date=mvindex(temp,1), mon_date=if(mon_date="1","01",if(mon_date="2","02",if(mon_date="3","03",if(mon_date="4","04",if(mon_date="5","05",if(mon_date="6","06",if(mon_date="6","06",if(mon_date="7","07",if(mon_date="8","08",if(mon_date="9","09",mon_date))))))))))
+|eval mon_year=mvindex(temp,2), start_date_time=mon_patch."/".mon_date."/".mon_year
+| eval timestamp=strptime(start_date_time, "%m/%d/%Y %H:%M")
+| eval formattedTimestamp = strftime(timestamp,"%m/%d/%Y %H:%M")
