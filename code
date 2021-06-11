@@ -1,5 +1,5 @@
 <form>
-  <label>Linux Automation</label>
+  <label>Windows Automation</label>
   <fieldset submitButton="false">
     <input type="time" token="field1">
       <label>Time Range</label>
@@ -26,10 +26,10 @@
   </row>
   <row>
     <panel>
+      <title>Servers Attempt Patching</title>
       <single>
-        <title>Servers Attempt Patching</title>
         <search>
-          <query>index="salt_na" sourcetype="patching:automation" platform=linux |dedup hostname | replace "/var/log/patching_log/patching_success.log" with "Success", "/var/log/patching_log/patching_error.log" with "Failed" in source |dedup hostname | table hostname | search source!="/var/log/patching_log/patched_status.log" | chart count</query>
+          <query>index="salt_na" sourcetype="patching:automation" source="C:\\Temp\\DSUPSinfo\\Splunk_Patching.log" Platform="Windows" |dedup Hostname |table Hostname |chart count</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -57,10 +57,10 @@
       </single>
     </panel>
     <panel>
+      <title>Script Success vs Failed</title>
       <chart>
-        <title>Script Success vs Failed</title>
         <search>
-          <query>index="salt_na" sourcetype="patching:automation" platform=linux | replace "/var/log/patching_log/patching_success.log" with "Success", "/var/log/patching_log/patching_error.log" with "Failed", "/var/log/patching_log/scheduling_patching_error.log" with "Failed", "/var/log/patching_log/scheduling_patching_success.log" with "Success" in source | table _time hostname platform script_name source Output | search source!="/var/log/patching_log/patched_status.log" | chart count by source</query>
+          <query>index="salt_na" sourcetype="patching:automation" source="C:\\Temp\\DSUPSinfo\\Splunk_Patching.log" Platform="Windows" |eval Status=if(Status="Error","Failed",if(Status="Fail","Failed","Success"))|table Hostname Status |chart count by Status</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -102,10 +102,10 @@
       </chart>
     </panel>
     <panel>
+      <title>Total Patched vs Not-Patched</title>
       <chart>
-        <title>Total Patched vs Not-Patched</title>
         <search>
-          <query>index="salt_na" sourcetype="patching:automation" source=/var/log/patching_log/patched_status.log |dedup host |stats latest(os) as os latest(os_version) as os_version latest(os_level) as os_level latest(oel_kernel_version) as oel_kernel_version latest(Status) as Status latest(pending_pkg) as pending_pkg latest(pending_reboot) as pending_reboot latest(last_kernel_updated_date) as last_kernel_updated_date latest(last_pkg_installed_date) as last_pkg_installed_date latest(frequency) as frequency latest(uptime) as uptime by hostname | chart count by Status</query>
+          <query>index=salt_na sourcetype=salt:logs OR sourcetype=patching:log Name=Signature OS=Windows* Comment |dedup hostname |stats latest(OS) as OS latest(OS_Version) as OS_Version latest(Status) as Status latest(Pending_KB_Count) as Pending_KB_Count latest(Pending_Reboot) as Pending_Reboot latest(Frequency) as Frequency latest(Last_KB_PatchDate) as Last_KB_PatchDate latest(Pending_KB_No) as Pending_KB_No latest(Uptime) as Uptime latest(Comment) as Comment by hostname | chart count by Status</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -149,55 +149,55 @@
   </row>
   <row>
     <panel>
-      <input type="dropdown" token="platform">
+      <title>Windows Patching Log</title>
+      <input type="dropdown" token="Platform">
         <label>Platform</label>
         <choice value="*">All</choice>
         <default>*</default>
         <initialValue>*</initialValue>
-        <fieldForLabel>platform</fieldForLabel>
-        <fieldForValue>platform</fieldForValue>
+        <fieldForLabel>Platform</fieldForLabel>
+        <fieldForValue>Platform</fieldForValue>
         <search>
-          <query>index="salt_na" sourcetype="patching:automation" |dedup platform | table platform</query>
+          <query>index="salt_na" sourcetype="patching:automation" source="C:\\Temp\\DSUPSinfo\\Splunk_Patching.log" Platform="Windows" |dedup Platform |table Platform</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
       </input>
-      <input type="dropdown" token="script_name">
+      <input type="dropdown" token="Script_Name">
         <label>Script_Name</label>
         <choice value="*">All</choice>
         <default>*</default>
         <initialValue>*</initialValue>
-        <fieldForLabel>script_name</fieldForLabel>
-        <fieldForValue>script_name</fieldForValue>
+        <fieldForLabel>Script_Name</fieldForLabel>
+        <fieldForValue>Script_Name</fieldForValue>
         <search>
-          <query>index="salt_na" sourcetype="patching:automation" source="/var/log/patching_log/patching_success.log" | dedup script_name | table script_name</query>
+          <query>index="salt_na" sourcetype="patching:automation" source="C:\\Temp\\DSUPSinfo\\Splunk_Patching.log" Platform="Windows" |dedup Script_Name |table Script_Name</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
       </input>
-      <input type="dropdown" token="source">
+      <input type="dropdown" token="Status">
         <label>Status</label>
         <choice value="*">All</choice>
         <default>*</default>
         <initialValue>*</initialValue>
-        <fieldForLabel>source</fieldForLabel>
-        <fieldForValue>source</fieldForValue>
+        <fieldForLabel>Status</fieldForLabel>
+        <fieldForValue>Status</fieldForValue>
         <search>
-          <query>index="salt_na" sourcetype="patching:automation" Linux source="/var/log/patching_log/patching_success.log" OR source="/var/log/patching_log/patching_error.log"|dedup source | replace "/var/log/patching_log/patching_success.log" with "Success", "/var/log/patching_log/patching_error.log" with "Failed" in source | table source</query>
+          <query>index="salt_na" sourcetype="patching:automation" source="C:\\Temp\\DSUPSinfo\\Splunk_Patching.log" Platform="Windows" |dedup Status |table Status</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
       </input>
-      <input type="text" token="hostname">
+      <input type="text" token="Hostname">
         <label>Hostname</label>
         <default>*</default>
         <prefix>"</prefix>
         <suffix>*"</suffix>
       </input>
       <table>
-        <title>Linux Patching Log</title>
         <search>
-          <query>index="salt_na" sourcetype="patching:automation" platform=linux | replace "/var/log/patching_log/patching_success.log" with "Success", "/var/log/patching_log/patching_error.log" with "Failed" in source | table _time hostname platform script_name source Output |sort by _time desc | search source!="/var/log/patching_log/patched_status.log" AND hostname=$hostname$ AND script_name=$script_name$ AND source=$source$ AND platform=$platform$</query>
+          <query>index="salt_na" sourcetype="patching:automation" source="C:\\Temp\\DSUPSinfo\\Splunk_Patching.log" Platform="Windows" |table _time Hostname Platform Script_Name Status Output |sort by _time desc | search Hostname=$Hostname$ AND Script_Name=$Script_Name$ AND Status=$Status$ AND Platform=$Platform$</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -214,11 +214,19 @@
         <format type="color" field="source">
           <colorPalette type="map">{"Failed":#DC4E41,"Success":#B6C75A}</colorPalette>
         </format>
-        <format type="color" field="hostname">
+        <format type="color" field="platform">
           <colorPalette type="sharedList"></colorPalette>
           <scale type="sharedCategory"></scale>
         </format>
-        <format type="color" field="script_name">
+        <format type="color" field="Script_Name">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="Status">
+          <colorPalette type="sharedList"></colorPalette>
+          <scale type="sharedCategory"></scale>
+        </format>
+        <format type="color" field="Hostname">
           <colorPalette type="sharedList"></colorPalette>
           <scale type="sharedCategory"></scale>
         </format>
@@ -227,46 +235,16 @@
   </row>
   <row>
     <panel>
-      <input type="dropdown" token="log_available">
-        <label>log_available</label>
-        <choice value="*">All</choice>
-        <choice value="&quot;Yes&quot;">Yes</choice>
-        <choice value="&quot;No&quot;">No</choice>
-        <default>*</default>
-        <initialValue>*</initialValue>
-        <fieldForLabel>log_available</fieldForLabel>
-        <fieldForValue>log_available</fieldForValue>
-        <search>
-          <query/>
-          <earliest>-24h@h</earliest>
-          <latest>now</latest>
-        </search>
-      </input>
-      <input type="dropdown" token="date">
-        <label>date</label>
-        <choice value="*">All</choice>
-        <default>*</default>
-        <initialValue>*</initialValue>
-        <fieldForLabel>date</fieldForLabel>
-        <fieldForValue>date</fieldForValue>
-        <search>
-          <query>| inputlookup linux_automation_patch.csv | eval date=substr(date_time, 0, len(date_time)-5) | eval time_utc=substr(date_time, 11, len(date_time)-13) |dedup date |table date</query>
-          <earliest>-24h@h</earliest>
-          <latest>now</latest>
-        </search>
-      </input>
+      <title>Windows Post Patch Status</title>
       <input type="text" token="hostname">
-        <label>hostname</label>
+        <label>Enter the server name</label>
         <default>*</default>
         <prefix>"</prefix>
         <suffix>*"</suffix>
-        <initialValue>*</initialValue>
       </input>
       <table>
-        <title>Schedule vs Job Trigger</title>
         <search>
-          <query>| inputlookup linux_automation_patch.csv |eval hostname=lower(hostname) | eval date=substr(date_time, 0, len(date_time)-5) | eval time_utc=substr(date_time, 11, len(date_time)-13) |sort date,time_utc |table hostname date time_utc date_time
-|join type=outer [search index=salt_na sourcetype="patching:automation" source!="/var/log/patching_log/patched_status.log" AND source!="/var/log/patching_log/patchingsplunk.log" platform="Linux" |dedup hostname |table hostname platform] |eval log_available=if(platform="Linux","Yes","No") |table hostname log_available date date_time |search hostname=$hostname$ AND date=$date$ AND log_available=$log_available$</query>
+          <query>index=salt_na sourcetype=salt:logs OR sourcetype=patching:log Name=Signature OS=Windows* Comment |dedup hostname |stats latest(OS) as OS latest(OS_Version) as OS_Version latest(Status) as Status latest(Pending_KB_Count) as Pending_KB_Count latest(Pending_Reboot) as Pending_Reboot latest(Frequency) as Frequency latest(Last_KB_PatchDate) as Last_KB_PatchDate latest(Pending_KB_No) as Pending_KB_No latest(Uptime) as Uptime latest(Comment) as Comment by hostname |search hostname=$hostname$</query>
           <earliest>$field1.earliest$</earliest>
           <latest>$field1.latest$</latest>
           <sampleRatio>1</sampleRatio>
@@ -278,49 +256,6 @@
         <option name="drilldown">none</option>
         <option name="percentagesRow">false</option>
         <option name="refresh.display">progressbar</option>
-        <option name="rowNumbers">false</option>
-        <option name="totalsRow">false</option>
-        <option name="wrap">true</option>
-        <format type="color" field="log_available">
-          <colorPalette type="map">{"Yes":#B6C75A,"No":#DC4E41}</colorPalette>
-        </format>
-        <format type="color" field="date">
-          <colorPalette type="sharedList"></colorPalette>
-          <scale type="sharedCategory"></scale>
-        </format>
-        <format type="color" field="time_utc">
-          <colorPalette type="sharedList"></colorPalette>
-          <scale type="sharedCategory"></scale>
-        </format>
-        <format type="color" field="date_time">
-          <colorPalette type="sharedList"></colorPalette>
-          <scale type="sharedCategory"></scale>
-        </format>
-      </table>
-    </panel>
-  </row>
-  <row>
-    <panel>
-      <input type="text" token="hostname">
-        <label>Enter the server name</label>
-        <default>*</default>
-        <prefix>"</prefix>
-        <suffix>*"</suffix>
-      </input>
-      <table>
-        <title>Linux Post Patch Status</title>
-        <search>
-          <query>index="salt_na" sourcetype="patching:automation" source="/var/log/patching_log/patched_status.log" os=linux |stats latest(os) as os latest(os_version) as os_version latest(os_level) as os_level latest(oel_kernel_version) as oel_kernel_version latest(Status) as Status latest(pending_pkg) as pending_pkg latest(pending_reboot) as pending_reboot latest(last_kernel_updated_date) as last_kernel_updated_date latest(last_pkg_installed_date) as last_pkg_installed_date latest(frequency) as frequency latest(uptime) as uptime by hostname |search hostname=$hostname$</query>
-          <earliest>$field1.earliest$</earliest>
-          <latest>$field1.latest$</latest>
-          <sampleRatio>1</sampleRatio>
-          <refresh>2m</refresh>
-          <refreshType>delay</refreshType>
-        </search>
-        <option name="count">10</option>
-        <option name="dataOverlayMode">none</option>
-        <option name="drilldown">none</option>
-        <option name="percentagesRow">false</option>
         <option name="rowNumbers">false</option>
         <option name="totalsRow">false</option>
         <option name="wrap">false</option>
